@@ -1,0 +1,8 @@
+span input{
+    height: 30px;
+    color: black;
+}
+
+span {
+    white-space: pre-wrap !important;
+}
