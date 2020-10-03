@@ -85,7 +85,7 @@ function vueInit() {
                 if (this.loginAccount == "charmon" &&
                     this.loginPassword == "likewhat") {
                     console.log("success!");
-                    window.location.href = '/ptsbbs/page1';
+                    window.location.href = '/ptsbbs/layout_page1';
                 } else {
                     console.log("failed");
                 }
