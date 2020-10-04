@@ -1,3 +1,6 @@
+var app;
+var bbsrowCount = 0;
+
 function replace(ak) {
     $('#mainContainer > span > div > span > span > span').each(function () {
         var text = $(this).text();
@@ -22,6 +25,31 @@ $(document).ready(function () {
     */
 
     replace(vueInit);
+
+    $('#mainContainer > span').each(function () {
+        bbsrowCount++;
+        console.log(bbsrowCount);
+    });
+});
+
+$(document).keydown(function (e) {
+    switch (e.which) {
+        case 37: // left
+            break;
+        case 38: // up
+            app.up();
+            break;
+
+        case 39: // right
+            break;
+
+        case 40: // down
+            app.down();
+            break;
+
+        default: return;
+    }
+    e.preventDefault();
 });
 
 Vue.component('ep2', {
@@ -43,10 +71,23 @@ Vue.component('input_code', {
     }
 });
 
+Vue.component('page2_pointer',{
+    template: '<span class="q7 b0" @keyup.up="kup">                    {{ text }}(</span>',
+    data(){
+        return {
+        text: this.$root.$data.ctnActiveClass
+        }
+    },
+    methods:{
+        getPointer:function(){
+            return this.$root.$data.ctnActiveClass;
+        }
+    }
+});
 
 function vueInit() {
-
-    var app = new Vue({
+    console.log("vue init");
+    app = new Vue({
         el: '.main',
         data: {
             accountPlaceholder: '',
@@ -58,7 +99,8 @@ function vueInit() {
             ctnErrorClass: '',
             trySearch: '',
             loginAccount: '',
-            loginPassword: ''
+            loginPassword: '',
+            bbsrowIndex: 0
         },
         methods: {
             toggle: function () {
@@ -89,6 +131,19 @@ function vueInit() {
                 } else {
                     console.log("failed");
                 }
+            },
+            up: function () {
+                console.log("press up");
+                //bbsrowIndex--;
+                //if (bbsrowIndex < 0) bbsrowIndex = 0;
+            },
+            down: function () {
+                console.log("press down");
+                //bbsrowIndex++;
+                //if (bbsrowIndex > bbsrowCount) bbsrowIndex = 0;
+            },
+            kup:function(){
+                console.log("k up");
             }
         }
     });
