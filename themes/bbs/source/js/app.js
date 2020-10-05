@@ -136,7 +136,10 @@ function addVue(callback) {
                         this.bbsrowIndex++;
                         if (this.bbsrowIndex > this.bbsrowCount - 1) this.bbsrowIndex = 0;
                         break;
+                    case 13: //enter
+                        break;
                     default:
+                        console.log(e.which);
                         return;
                 }
                 e.preventDefault();
