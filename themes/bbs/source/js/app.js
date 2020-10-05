@@ -1,65 +1,33 @@
 var app;
-var bbsrowCount = 0;
 
-function replace(ak) {
+$(document).ready(function () {
+    var v = function () {
+        addVue(restoreSpace);
+    };
+    replaceSpace(v);
+
+    $('#mainContainer > span').each(function () {
+        //Counting each bbsrow
+    });
+});
+
+function replaceSpace(callback) {
+    //Replace all space in html with <_> incase of trim by Vue
     $('#mainContainer > span > div > span > span > span').each(function () {
         var text = $(this).text();
         $(this).text(text.replace(/\s/g, "<_>"));
     });
 
-    ak();
+    callback();
 }
 
-function replace2() {
+function restoreSpace() {
+    //Replace all <_> back to space
     $('#mainContainer > span > div > span > span > span').each(function () {
         var text = $(this).text();
         $(this).text(text.replace(/<_>/g, " "));
     });
 }
-
-$(document).ready(function () {
-    /*
-    setTimeout(replace, 0);
-    setTimeout(vueInit, 1000);
-    setTimeout(replace2, 2000);
-    */
-
-    replace(vueInit);
-
-    $('#mainContainer > span').each(function () {
-        bbsrowCount++;
-        console.log(bbsrowCount);
-    });
-});
-
-$(document).keydown(function (e) {
-    switch (e.which) {
-        case 37: // left
-            break;
-        case 38: // up
-            app.up();
-            break;
-
-        case 39: // right
-            break;
-
-        case 40: // down
-            app.down();
-            break;
-
-        default: return;
-    }
-    e.preventDefault();
-});
-
-Vue.component('ep2', {
-    template: '<div>{{ text }}</div>',
-    data() {
-        return {
-            text: '乘客 ep2'
-        }
-    }
-});
 
 Vue.component('input_code', {
     template: '<input :placeholder="text">',
@@ -71,36 +39,38 @@ Vue.component('input_code', {
     }
 });
 
-Vue.component('page2_pointer',{
-    template: '<span class="q7 b0" @keyup.up="kup">                    {{ text }}(</span>',
-    data(){
+Vue.component('page2_pointer', {
+    template: '<span class="q7 b0" v-if="this.$root.$data.bbsrowIndex === {{ id }}">Hey</span>',
+    props: ['id'],
+    data() {
         return {
-        text: this.$root.$data.ctnActiveClass
+            //text: this.$root.$data.ctnActiveClass
         }
     },
-    methods:{
-        getPointer:function(){
+    methods: {
+        getPointer: function () {
             return this.$root.$data.ctnActiveClass;
         }
     }
 });
 
-function vueInit() {
-    console.log("vue init");
+function addVue(callback) {
     app = new Vue({
         el: '.main',
+        created: function () {
+            window.addEventListener('keyup', this.kup);
+        },
+        mounted: function () {
+            var i = document.getElementById('mainContainer').getAttribute('bbsrowCount');
+            this.bbsrowCount = i;
+        },
         data: {
             accountPlaceholder: '',
             passwordPlaceholder: '',
-            ctn1: 1,
-            ctn2: 1,
-            ctnActiveClass: 'tabbar_active',
-            ctnDeactiveClass: '',
-            ctnErrorClass: '',
-            trySearch: '',
             loginAccount: '',
             loginPassword: '',
-            bbsrowIndex: 0
+            bbsrowIndex: 0,
+            bbsrowCount: 0
         },
         methods: {
             toggle: function () {
@@ -127,26 +97,30 @@ function vueInit() {
                 if (this.loginAccount == "charmon" &&
                     this.loginPassword == "likewhat") {
                     console.log("success!");
+                    //Direct user to next page
                     window.location.href = '/ptsbbs/layout_page1';
                 } else {
                     console.log("failed");
                 }
             },
-            up: function () {
-                console.log("press up");
-                //bbsrowIndex--;
-                //if (bbsrowIndex < 0) bbsrowIndex = 0;
-            },
-            down: function () {
-                console.log("press down");
-                //bbsrowIndex++;
-                //if (bbsrowIndex > bbsrowCount) bbsrowIndex = 0;
-            },
-            kup:function(){
-                console.log("k up");
+            kup: function (e) {
+                switch (e.which) {
+                    case 38: //up
+                        this.bbsrowIndex--;
+                        if (this.bbsrowIndex < 0) this.bbsrowIndex = this.bbsrowCount - 1;
+                        break;
+                    case 40: //down
+                        this.bbsrowIndex++;
+                        if (this.bbsrowIndex > this.bbsrowCount - 1) this.bbsrowIndex = 0;
+                        break;
+                    default:
+                        return;
+                }
+                e.preventDefault();
+                console.log(this.bbsrowIndex);
             }
         }
     });
 
-    replace2();
+    callback();
 }
