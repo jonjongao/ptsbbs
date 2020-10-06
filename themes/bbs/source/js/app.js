@@ -68,7 +68,7 @@ function addVue(callback) {
             getAccountLabel: function () {
                 //Original 'Charmon' length = 7
                 //Rest of space length = 9, so is 16 in total
-                var t = this.loginAccount;
+                var t = this.loginAccount == '' ? 'Guest' : this.loginAccount;
                 t = t.padEnd(16);
                 return t;
             },
@@ -90,7 +90,7 @@ function addVue(callback) {
         data: {
             accountPlaceholder: '',
             passwordPlaceholder: '',
-            loginAccount: 'Guest',
+            loginAccount: '',
             loginPassword: '',
             bbsrowIndex: 0,
             bbsrowCount: 0
